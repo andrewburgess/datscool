@@ -1,21 +1,38 @@
+const _ = window._
+
+const LAST_UPDATE_KEY = "last-update"
+const LOCAL_SITES_KEY = "local-sites"
+const VISITED_SITES_KEY = "visited-sites"
+
 class App {
     constructor() {
+        this.$add = document.getElementById("add")
+        this.$addSeed = document.getElementById("seed")
         this.$iframe = document.getElementById("site")
         this.$next = document.getElementById("datscool")
         this.$removeSeed = document.getElementById("remove-seed")
-        this.$addSeed = document.getElementById("seed")
 
+        this.$add.addEventListener("click", () => this.addSite())
+        this.$addSeed.addEventListener("click", () => this.addSeed())
         this.$next.addEventListener("click", () => this.loadNextSite())
         this.$removeSeed.addEventListener("click", () => this.removeSeed())
-        this.$addSeed.addEventListener("click", () => this.addSeed())
 
         this.onPeerConnected = this.onPeerConnected.bind(this)
         this.onPeerDisconnected = this.onPeerDisconnected.bind(this)
         this.onSiteLoad = this.onSiteLoad.bind(this)
 
-        this.checkSeedCapability()
-        this.enableMessaging()
+        this.initialize()
     }
+
+    async addSeed() {
+        const settings = await experimental.library.requestAdd(this.currentArchiveInfo.url)
+        if (settings.isSaved) {
+            this.$addSeed.classList.add("hidden")
+            this.$removeSeed.classList.remove("hidden")
+        }
+    }
+
+    async addSite() {}
 
     async checkSeedCapability() {
         if (experimental && experimental.library) {
@@ -48,17 +65,73 @@ class App {
         experimental.datPeers.addEventListener("disconnect", this.onPeerDisconnected)
     }
 
+    async initialize() {
+        if (!localStorage.getItem(LAST_UPDATE_KEY)) {
+            localStorage.setItem(LAST_UPDATE_KEY, "")
+        }
+
+        if (!localStorage.getItem(LOCAL_SITES_KEY)) {
+            localStorage.setItem(LOCAL_SITES_KEY, "{}")
+        }
+
+        if (!localStorage.getItem(VISITED_SITES_KEY)) {
+            localStorage.setItem(VISITED_SITES_KEY, "[]")
+        }
+
+        await this.checkSeedCapability()
+        await this.enableMessaging()
+        await this.loadSites()
+
+        this.onLoaded()
+    }
+
     loadNextSite() {
         this.$iframe.src = "about:blank"
 
         this.$iframe.classList.remove("loaded")
         this.$iframe.addEventListener("load", this.onSiteLoad)
 
-        this.$iframe.src = "dat://electro.pizza/"
+        this.nextSite = _.sample(this.sites)
+
+        if (!this.nextSite) {
+            alert("No more sites!")
+            return
+        }
+
+        this.sites.splice(this.sites.indexOf(this.nextSite), 1)
+
+        this.$iframe.src = this.nextSite.url
 
         this.$next.setAttribute("disabled", "disabled")
         this.$addSeed.setAttribute("disabled", "disabled")
         this.$removeSeed.setAttribute("disabled", "disabled")
+    }
+
+    async loadSites() {
+        const archive = new DatArchive(window.location)
+        const sitesFile = await archive.readFile("/data/sites.json")
+        this.sites = JSON.parse(sitesFile)
+
+        const lastUpdate = new Date(localStorage.getItem(LAST_UPDATE_KEY) || 0)
+        const localSites = JSON.parse(localStorage.getItem(LOCAL_SITES_KEY))
+        const visitedSites = JSON.parse(localStorage.getItem(VISITED_SITES_KEY))
+
+        this.sites = _.uniqBy(
+            _.filter({ ...this.sites, ...localSites }, (value, key) => {
+                const added = new Date(value.added)
+                return added > lastUpdate
+            }),
+            "url"
+        )
+
+        this.sites = _.differenceWith(this.sites, visitedSites, (left, right) => {
+            return left.url === right
+        })
+    }
+
+    onLoaded() {
+        this.$add.removeAttribute("disabled")
+        this.$next.removeAttribute("disabled")
     }
 
     onPeerConnected(peer) {
@@ -77,6 +150,10 @@ class App {
 
         this.currentArchive = new DatArchive(this.$iframe.src)
         this.currentArchiveInfo = await this.currentArchive.getInfo()
+
+        const visited = JSON.parse(localStorage.getItem(VISITED_SITES_KEY))
+        visited.push(this.nextSite.url)
+        localStorage.setItem(VISITED_SITES_KEY, JSON.stringify(visited))
 
         if (this.canSeed && experimental && experimental.library) {
             const isSeeding = await experimental.library.get(this.currentArchiveInfo.url)
@@ -99,14 +176,6 @@ class App {
         if (!settings.isSaved) {
             this.$addSeed.classList.remove("hidden")
             this.$removeSeed.classList.add("hidden")
-        }
-    }
-
-    async addSeed() {
-        const settings = await experimental.library.requestAdd(this.currentArchiveInfo.url)
-        if (settings.isSaved) {
-            this.$addSeed.classList.add("hidden")
-            this.$removeSeed.classList.remove("hidden")
         }
     }
 }
