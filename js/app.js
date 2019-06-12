@@ -61,9 +61,7 @@ class App {
         this.disableForm()
 
         try {
-            const name = await DatArchive.resolveName(url)
-            const parsedUrl = new URL(url)
-            const key = `dat://${name}${parsedUrl.pathname}`
+            const key = await this.normalizeUrl(url)
 
             this.insertLocalSite(key, url)
             this.broadcastSite(key, url, new Date().toISOString())
@@ -243,6 +241,12 @@ class App {
         })
     }
 
+    async normalizeUrl(url) {
+        const name = await DatArchive.resolveName(url)
+        const parsedUrl = new URL(url)
+        return `dat://${name}${parsedUrl.pathname}`
+    }
+
     onLoaded() {
         this.$addButton.removeAttribute("disabled")
         this.$next.removeAttribute("disabled")
@@ -279,7 +283,9 @@ class App {
 
         this.$next.removeAttribute("disabled")
 
-        this.currentArchive = new DatArchive(this.$iframe.src)
+        const datUrl = await this.normalizeUrl(this.$iframe.src)
+
+        this.currentArchive = new DatArchive(datUrl)
         this.currentArchiveInfo = await this.currentArchive.getInfo()
 
         const visited = JSON.parse(localStorage.getItem(VISITED_SITES_KEY))
