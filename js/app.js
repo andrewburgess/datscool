@@ -9,9 +9,12 @@ class App {
         this.$removeSeed.addEventListener("click", () => this.removeSeed())
         this.$addSeed.addEventListener("click", () => this.addSeed())
 
+        this.onPeerConnected = this.onPeerConnected.bind(this)
+        this.onPeerDisconnected = this.onPeerDisconnected.bind(this)
         this.onSiteLoad = this.onSiteLoad.bind(this)
 
         this.checkSeedCapability()
+        this.enableMessaging()
     }
 
     async checkSeedCapability() {
@@ -36,19 +39,41 @@ class App {
         }
     }
 
+    async enableMessaging() {
+        if (!experimental || !experimental.datPeers) {
+            alert("This app needs the experimental feature datPeers")
+        }
+
+        experimental.datPeers.addEventListener("connect", this.onPeerConnected)
+        experimental.datPeers.addEventListener("disconnect", this.onPeerDisconnected)
+    }
+
     loadNextSite() {
+        this.$iframe.src = "about:blank"
+
         this.$iframe.classList.remove("loaded")
         this.$iframe.addEventListener("load", this.onSiteLoad)
 
-        this.$iframe.src = "dat://pfrazee.hashbase.io/blog/unwalled-garden"
+        this.$iframe.src = "dat://electro.pizza/"
 
+        this.$next.setAttribute("disabled", "disabled")
         this.$addSeed.setAttribute("disabled", "disabled")
         this.$removeSeed.setAttribute("disabled", "disabled")
+    }
+
+    onPeerConnected(peer) {
+        console.log(`${peer} connected`)
+    }
+
+    onPeerDisconnected(peer) {
+        console.log(`${peer} disconnected`)
     }
 
     async onSiteLoad() {
         this.$iframe.removeEventListener("load", this.onSiteLoad)
         this.$iframe.classList.add("loaded")
+
+        this.$next.removeAttribute("disabled")
 
         this.currentArchive = new DatArchive(this.$iframe.src)
         this.currentArchiveInfo = await this.currentArchive.getInfo()
