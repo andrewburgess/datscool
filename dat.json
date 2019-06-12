@@ -1,0 +1,12 @@
+{
+  "title": "DatsCool",
+  "description": "Discover and share DAT cool stuff",
+  "type": [
+    "website"
+  ],
+  "experimental": {
+    "apis": [
+      "datPeers"
+    ]
+  }
+}
