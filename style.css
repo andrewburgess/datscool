@@ -1,0 +1,109 @@
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    font-family: sans-serif;
+    font-size: 16px;
+}
+
+.toolbar {
+    align-items: center;
+    background-color: #470068;
+    box-shadow: 0px 2px 16px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: row;
+    height: 64px;
+    justify-content: space-between;
+    padding: 0 2em;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 2;
+}
+
+#datscool, #add {
+    border-radius: 16px;
+    color: #fff;
+    cursor: pointer;
+    font-weight: 900;
+    height: 48px;
+    padding: 0 4em;
+    text-transform: uppercase;
+    transition: background-color 0.2s, border 0.2s;
+}
+
+#add {
+    background-color: #12751f;
+    border: 4px solid #308a3c;
+}
+
+#add:hover {
+    background-color: #23b136;
+    border: 4px solid #54cf64;
+}
+
+#datscool {
+    background-color: #f032c7;
+    border: 4px solid #f75dd5;
+}
+
+#datscool:hover {
+    background-color: #ff63dd;
+    border: 4px solid #f78adf;
+}
+
+#site {
+    bottom: 0;
+    height: 100%;
+    left: 0;
+    position: fixed;
+    right: 0;
+    top: 64px;
+    width: 100%;
+    z-index: 1;
+}
