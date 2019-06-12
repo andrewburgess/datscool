@@ -148,14 +148,21 @@ html {
 }
 
 button {
+    align-items: center;
     border-radius: 16px;
     color: #fff;
     cursor: pointer;
+    display: flex;
     font-weight: 900;
     height: 48px;
-    padding: 0 4em;
+    padding: 0 2em;
     text-transform: uppercase;
     transition: background-color 0.2s, border 0.2s;
+}
+
+button > svg {
+    height: 28px;
+    width: 28px;
 }
 
 #add {
@@ -181,11 +188,20 @@ button {
 #remove-seed {
     background-color: #8d040f;
     border: 4px solid #a31a26;
+    position: relative;
 }
 
 #remove-seed:hover {
     background-color: #da1626;
     border: 4px solid #e23c4a;
+}
+
+#remove-seed .ban {
+    height: 40px;
+    left: calc(50% - 18px);
+    opacity: 0.6;
+    position: absolute;
+    width: 40px;
 }
 
 #datscool {

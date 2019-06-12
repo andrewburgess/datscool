@@ -134,12 +134,12 @@ class App {
         this.$next.removeAttribute("disabled")
     }
 
-    onPeerConnected(peer) {
-        console.log(`${peer} connected`)
+    onPeerConnected(event) {
+        console.log(`${event.peer.id} connected`)
     }
 
-    onPeerDisconnected(peer) {
-        console.log(`${peer} disconnected`)
+    onPeerDisconnected(event) {
+        console.log(`${event.peer.id} disconnected`)
     }
 
     async onSiteLoad() {
