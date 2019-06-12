@@ -247,3 +247,28 @@ button[disabled]:hover {
 .hidden {
     display: none !important;
 }
+
+.peers {
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.2);
+    border: 8px;
+    bottom: 16px;
+    display: flex;
+    flex-direction: row;
+    padding: 0.5em;
+    position: fixed;
+    right: 16px;
+    z-index: 3;
+}
+
+.peers > svg {
+    fill: rgba(0, 0, 0, 0.4);
+    height: 0.75em;
+    width: 0.86em;
+}
+
+#peer-count {
+    color: rgba(0, 0, 0, 0.4);
+    font-weight: bold;
+    margin-right: 0.25em;
+}

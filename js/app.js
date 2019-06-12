@@ -10,12 +10,15 @@ class App {
         this.$addSeed = document.getElementById("seed")
         this.$iframe = document.getElementById("site")
         this.$next = document.getElementById("datscool")
+        this.$peerCount = document.getElementById("peer-count")
         this.$removeSeed = document.getElementById("remove-seed")
 
         this.$add.addEventListener("click", () => this.addSite())
         this.$addSeed.addEventListener("click", () => this.addSeed())
         this.$next.addEventListener("click", () => this.loadNextSite())
         this.$removeSeed.addEventListener("click", () => this.removeSeed())
+
+        this.peerCount = 0
 
         this.onPeerConnected = this.onPeerConnected.bind(this)
         this.onPeerDisconnected = this.onPeerDisconnected.bind(this)
@@ -63,6 +66,10 @@ class App {
 
         experimental.datPeers.addEventListener("connect", this.onPeerConnected)
         experimental.datPeers.addEventListener("disconnect", this.onPeerDisconnected)
+
+        const peers = await experimental.datPeers.list()
+        this.peerCount = this.peerCount + peers.length
+        this.updatePeerCount()
     }
 
     async initialize() {
@@ -136,10 +143,16 @@ class App {
 
     onPeerConnected(event) {
         console.log(`${event.peer.id} connected`)
+
+        this.peerCount++
+        this.updatePeerCount()
     }
 
     onPeerDisconnected(event) {
         console.log(`${event.peer.id} disconnected`)
+
+        this.peerCount--
+        this.updatePeerCount()
     }
 
     async onSiteLoad() {
@@ -177,6 +190,10 @@ class App {
             this.$addSeed.classList.remove("hidden")
             this.$removeSeed.classList.add("hidden")
         }
+    }
+
+    updatePeerCount() {
+        this.$peerCount.innerText = this.peerCount
     }
 }
 
