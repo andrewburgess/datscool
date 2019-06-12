@@ -12,20 +12,6 @@ class App {
         this.onSiteLoad = this.onSiteLoad.bind(this)
 
         this.checkSeedCapability()
-        if (experimental) {
-            if (!experimental.library) {
-                document.removeChild(this.$addSeed)
-                document.removeChild(this.$removeSeed)
-            } else {
-                experimental.library
-                    .list({
-                        isSaved: true
-                    })
-                    .then((records) => {
-                        console.log(records)
-                    })
-            }
-        }
     }
 
     async checkSeedCapability() {
