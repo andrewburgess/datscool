@@ -1,25 +1,34 @@
 const _ = window._
 
+const ADD_SITE = "add:site"
 const LAST_UPDATE_KEY = "last-update"
 const LOCAL_SITES_KEY = "local-sites"
 const VISITED_SITES_KEY = "visited-sites"
 
 class App {
     constructor() {
-        this.$add = document.getElementById("add")
+        this.$addButton = document.getElementById("add")
         this.$addSeed = document.getElementById("seed")
+        this.$addSite = document.getElementById("add-site")
+        this.$addSiteForm = document.getElementById("add-site-form")
+        this.$addSiteModal = document.getElementById("add-site-modal")
+        this.$closeModal = document.getElementById("close-modal")
         this.$iframe = document.getElementById("site")
         this.$next = document.getElementById("datscool")
         this.$peerCount = document.getElementById("peer-count")
         this.$removeSeed = document.getElementById("remove-seed")
 
-        this.$add.addEventListener("click", () => this.addSite())
+        this.$addButton.addEventListener("click", () => this.showAddSiteModal())
         this.$addSeed.addEventListener("click", () => this.addSeed())
+        this.$addSite.addEventListener("click", (event) => this.addSite(event))
+        this.$addSiteForm.addEventListener("submit", (event) => this.addSite(event))
+        this.$closeModal.addEventListener("click", () => this.closeAddSiteModal())
         this.$next.addEventListener("click", () => this.loadNextSite())
         this.$removeSeed.addEventListener("click", () => this.removeSeed())
 
         this.peerCount = 0
 
+        this.onMessageReceived = this.onMessageReceived.bind(this)
         this.onPeerConnected = this.onPeerConnected.bind(this)
         this.onPeerDisconnected = this.onPeerDisconnected.bind(this)
         this.onSiteLoad = this.onSiteLoad.bind(this)
@@ -35,7 +44,57 @@ class App {
         }
     }
 
-    async addSite() {}
+    async addSite(event) {
+        event.preventDefault()
+        event.stopPropagation()
+
+        if (this.$addSiteForm.hasAttribute("disabled")) {
+            return
+        }
+
+        const $error = document.getElementById("add-error-message")
+        $error.innerHTML = ""
+
+        const formData = new FormData(this.$addSiteForm)
+        const url = formData.get("url")
+
+        this.disableForm()
+
+        try {
+            const name = await DatArchive.resolveName(url)
+            const parsedUrl = new URL(url)
+            const key = `dat://${name}${parsedUrl.pathname}`
+
+            this.insertLocalSite(key, url)
+            this.broadcastSite(key, url, new Date().toISOString())
+
+            this.enableForm()
+            const inputs = this.$addSiteForm.getElementsByTagName("input")
+            for (let input of inputs) {
+                input.value = ""
+            }
+        } catch (err) {
+            if (err.invalidDomainName) {
+                $error.innerHTML = `<code>${_.truncate(url, {
+                    length: 40
+                })}</code><br />is not a valid <code>dat</code> url`
+                this.enableForm()
+                this.$addSiteForm.getElementsByTagName("input")[0].focus()
+            }
+            console.error(err)
+        }
+    }
+
+    async broadcastSite(key, url, added) {
+        await experimental.datPeers.broadcast({
+            type: ADD_SITE,
+            payload: {
+                added,
+                key,
+                url
+            }
+        })
+    }
 
     async checkSeedCapability() {
         if (experimental && experimental.library) {
@@ -59,6 +118,35 @@ class App {
         }
     }
 
+    closeAddSiteModal() {
+        this.$addSiteModal.classList.remove("visible")
+
+        const inputs = this.$addSiteForm.getElementsByTagName("input")
+        for (let input of inputs) {
+            input.value = ""
+        }
+
+        this.enableForm()
+    }
+
+    disableForm() {
+        this.$addSite.setAttribute("disabled", "disabled")
+        this.$addSiteForm.setAttribute("disabled", "disabled")
+        const inputs = this.$addSiteForm.getElementsByTagName("input")
+        for (let input of inputs) {
+            input.setAttribute("disabled", "disabled")
+        }
+    }
+
+    enableForm() {
+        this.$addSite.removeAttribute("disabled")
+        this.$addSiteForm.removeAttribute("disabled")
+        const inputs = this.$addSiteForm.getElementsByTagName("input")
+        for (let input of inputs) {
+            input.removeAttribute("disabled")
+        }
+    }
+
     async enableMessaging() {
         if (!experimental || !experimental.datPeers) {
             alert("This app needs the experimental feature datPeers")
@@ -66,6 +154,7 @@ class App {
 
         experimental.datPeers.addEventListener("connect", this.onPeerConnected)
         experimental.datPeers.addEventListener("disconnect", this.onPeerDisconnected)
+        experimental.datPeers.addEventListener("message", this.onMessageReceived)
 
         const peers = await experimental.datPeers.list()
         this.peerCount = this.peerCount + peers.length
@@ -90,6 +179,24 @@ class App {
         await this.loadSites()
 
         this.onLoaded()
+    }
+
+    insertLocalSite(key, url, date) {
+        if (!date) {
+            date = new Date().toISOString()
+        }
+
+        const local = JSON.parse(localStorage.getItem(LOCAL_SITES_KEY))
+        if (!local[key]) {
+            local[key] = {
+                added: date,
+                url: url
+            }
+        }
+        localStorage.setItem(LOCAL_SITES_KEY, JSON.stringify(local))
+
+        this.sites.push(local[key])
+        this.sites = _.uniqBy(this.sites, "url")
     }
 
     loadNextSite() {
@@ -137,8 +244,19 @@ class App {
     }
 
     onLoaded() {
-        this.$add.removeAttribute("disabled")
+        this.$addButton.removeAttribute("disabled")
         this.$next.removeAttribute("disabled")
+    }
+
+    onMessageReceived(event) {
+        const message = event.message
+        const payload = message.payload
+
+        switch (message.type) {
+            case ADD_SITE:
+                this.insertLocalSite(payload.key, payload.url, payload.added)
+                break
+        }
     }
 
     onPeerConnected(event) {
@@ -190,6 +308,10 @@ class App {
             this.$addSeed.classList.remove("hidden")
             this.$removeSeed.classList.add("hidden")
         }
+    }
+
+    async showAddSiteModal() {
+        this.$addSiteModal.classList.add("visible")
     }
 
     updatePeerCount() {
