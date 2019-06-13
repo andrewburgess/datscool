@@ -9,6 +9,20 @@ const SeedButton = (props) => {
     const [sites] = useContext(SitesContext)
     const [isSeeding, setIsSeeding] = useState(false)
 
+    useEffect(() => {
+        if (!window.experimental || !window.experimental.library || !sites.currentSiteKey) {
+            return
+        }
+
+        const checkSeedStatus = async () => {
+            const isSeeding = await window.experimental.library.get(sites.currentSiteKey)
+
+            setIsSeeding(isSeeding.isSaved)
+        }
+
+        checkSeedStatus()
+    }, [sites.currentSiteKey])
+
     if (!window.experimental || !window.experimental.library) {
         return <div />
     }
