@@ -146,17 +146,7 @@ class App {
     }
 
     async enableMessaging() {
-        if (!experimental || !experimental.datPeers) {
-            alert("This app needs the experimental feature datPeers")
-        }
-
-        experimental.datPeers.addEventListener("connect", this.onPeerConnected)
-        experimental.datPeers.addEventListener("disconnect", this.onPeerDisconnected)
         experimental.datPeers.addEventListener("message", this.onMessageReceived)
-
-        const peers = await experimental.datPeers.list()
-        this.peerCount = this.peerCount + peers.length
-        this.updatePeerCount()
     }
 
     async initialize() {
@@ -263,20 +253,6 @@ class App {
         }
     }
 
-    onPeerConnected(event) {
-        console.log(`${event.peer.id} connected`)
-
-        this.peerCount++
-        this.updatePeerCount()
-    }
-
-    onPeerDisconnected(event) {
-        console.log(`${event.peer.id} disconnected`)
-
-        this.peerCount--
-        this.updatePeerCount()
-    }
-
     async onSiteLoad() {
         this.$iframe.removeEventListener("load", this.onSiteLoad)
         this.$iframe.classList.add("loaded")
@@ -318,10 +294,6 @@ class App {
 
     async showAddSiteModal() {
         this.$addSiteModal.classList.add("visible")
-    }
-
-    updatePeerCount() {
-        this.$peerCount.innerText = this.peerCount
     }
 }
 

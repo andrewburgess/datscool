@@ -1,14 +1,16 @@
-import React from "react"
+import React, { useContext } from "react"
 import styled from "styled-components"
 
 import Button from "./Button"
 import SeedButton from "./SeedButton"
+import { SitesContext } from "../context/sites-context"
 
 const Toolbar = (props) => {
+    const [siteState] = useContext(SitesContext)
     return (
         <div className={props.className}>
-            <SeedButton />
-            <Button disabled type="button">
+            <SeedButton disabled={siteState.loading} />
+            <Button disabled={siteState.loading} type="button">
                 DatsCool
             </Button>
         </div>
