@@ -3,9 +3,10 @@ const Theme = {
         primary: "#470068"
     },
     layers: {
-        toolbar: 2,
+        modal: 5,
         peers: 3,
-        site: 1
+        site: 1,
+        toolbar: 2
     }
 }
 

@@ -1,6 +1,7 @@
 import React, { useContext } from "react"
 import styled from "styled-components"
 
+import AddSite from "./AddSite"
 import Button from "./Button"
 import SeedButton from "./SeedButton"
 import { LOAD_NEXT_SITE, SitesContext } from "../context/sites-context"
@@ -20,6 +21,7 @@ const Toolbar = (props) => {
             >
                 DatsCool
             </Button>
+            <AddSite />
         </div>
     )
 }
