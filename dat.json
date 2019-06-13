@@ -9,5 +9,6 @@
       "datPeers",
       "library"
     ]
-  }
+  },
+  "web_root": "/build"
 }
