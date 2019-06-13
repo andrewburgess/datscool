@@ -3,14 +3,21 @@ import styled from "styled-components"
 
 import Button from "./Button"
 import SeedButton from "./SeedButton"
-import { SitesContext } from "../context/sites-context"
+import { LOAD_NEXT_SITE, SitesContext } from "../context/sites-context"
 
 const Toolbar = (props) => {
-    const [siteState] = useContext(SitesContext)
+    const [siteState, siteDispatch] = useContext(SitesContext)
     return (
         <div className={props.className}>
-            <SeedButton disabled={siteState.loading} />
-            <Button disabled={siteState.loading} type="button">
+            <SeedButton />
+            <Button
+                disabled={siteState.loading || siteState.isEmpty}
+                onClick={(event) => {
+                    event.preventDefault()
+                    siteDispatch({ type: LOAD_NEXT_SITE })
+                }}
+                type="button"
+            >
                 DatsCool
             </Button>
         </div>

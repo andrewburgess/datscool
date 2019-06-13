@@ -36,14 +36,6 @@ class App {
         this.initialize()
     }
 
-    async addSeed() {
-        const settings = await experimental.library.requestAdd(this.currentArchiveInfo.url)
-        if (settings.isSaved) {
-            this.$addSeed.classList.add("hidden")
-            this.$removeSeed.classList.remove("hidden")
-        }
-    }
-
     async addSite(event) {
         event.preventDefault()
         event.stopPropagation()

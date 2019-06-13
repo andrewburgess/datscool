@@ -4,7 +4,8 @@ const Theme = {
     },
     layers: {
         toolbar: 2,
-        peers: 3
+        peers: 3,
+        site: 1
     }
 }
 

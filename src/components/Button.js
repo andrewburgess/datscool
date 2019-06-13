@@ -13,4 +13,11 @@ export default styled.button`
     padding: 0 2rem;
     text-transform: uppercase;
     transition: background-color 0.2s, border 0.2s;
+
+    &[disabled] {
+        background-color: #666 !important;
+        border: 4px solid #999 !important;
+        cursor: not-allowed;
+        opacity: 0.5;
+    }
 `
