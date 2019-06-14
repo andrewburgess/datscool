@@ -313,7 +313,7 @@ const SitesProvider = (props) => {
                 if (archive.commit && typeof archive.commit === "function") {
                     await archive.commit()
                 }
-            }, 1000 * 60)
+            }, 1000 * 60 * 60)
         }
 
         updateArchive()
