@@ -296,6 +296,9 @@ const SitesProvider = (props) => {
                     return
                 }
 
+                // Clear out sites in local storage
+                localStorage.setItem(LOCAL_SITES_KEY, "{}")
+
                 const sitesFile = await archive.readFile("/data/sites.json")
                 let sites = JSON.parse(sitesFile)
 
