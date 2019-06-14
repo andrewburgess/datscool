@@ -322,7 +322,7 @@ const SitesProvider = (props) => {
                 return
             }
 
-            interval = setInterval(async () => {
+            const saveSites = async () => {
                 const local = JSON.parse(localStorage.getItem(LOCAL_SITES_KEY))
 
                 if (isEmpty(local)) {
@@ -345,7 +345,10 @@ const SitesProvider = (props) => {
                 if (archive.commit && typeof archive.commit === "function") {
                     await archive.commit()
                 }
-            }, 1000 * 60 * 60)
+            }
+
+            interval = setInterval(saveSites, 1000 * 60 * 60)
+            saveSites()
         }
 
         updateArchive()
