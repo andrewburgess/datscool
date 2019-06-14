@@ -23,4 +23,12 @@ const AddSite = (props) => {
     )
 }
 
-export default styled(AddSite)``
+export default styled(AddSite)`
+    background-color: #12751f;
+    border: 4px solid #308a3c;
+
+    &:hover {
+        background-color: #23b136;
+        border: 4px solid #54cf64;
+    }
+`

@@ -13,6 +13,7 @@ const Toolbar = (props) => {
             <SeedButton />
             <Button
                 disabled={siteState.loading || siteState.isEmpty}
+                className="datscool"
                 onClick={(event) => {
                     event.preventDefault()
                     siteDispatch({ type: LOAD_NEXT_SITE })
@@ -40,4 +41,14 @@ export default styled(Toolbar)`
     top: 0;
     width: 100%;
     z-index: ${(props) => props.theme.layers.toolbar};
+
+    .datscool {
+        background-color: #f032c7;
+        border: 4px solid #f75dd5;
+
+        &:hover {
+            background-color: #ff63dd;
+            border: 4px solid #f78adf;
+        }
+    }
 `
