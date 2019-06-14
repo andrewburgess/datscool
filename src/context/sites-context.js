@@ -113,6 +113,7 @@ const reducer = (state, action) => {
 
             return {
                 ...state,
+                isEmpty: false,
                 sites: {
                     ...state.sites,
                     [action.payload.key]: newSite
