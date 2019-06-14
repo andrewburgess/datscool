@@ -304,7 +304,7 @@ const SitesProvider = (props) => {
                     ...local
                 }
 
-                await archive.writeFile("/data/sites.json", JSON.stringify(sites), "utf8")
+                await archive.writeFile("/data/sites.json", JSON.stringify(sites, null, 2), "utf8")
 
                 if (archive.commit && typeof archive.commit === "function") {
                     await archive.commit()
