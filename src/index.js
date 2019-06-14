@@ -3,6 +3,7 @@ import ReactDOM from "react-dom"
 import { ThemeProvider, createGlobalStyle } from "styled-components"
 
 import App from "./components/App"
+import { SitesProvider } from "./context/sites-context"
 import Theme from "./style"
 
 const GlobalStyle = createGlobalStyle`
@@ -13,11 +14,13 @@ const GlobalStyle = createGlobalStyle`
 `
 
 ReactDOM.render(
-    <ThemeProvider theme={Theme}>
-        <React.Fragment>
-            <GlobalStyle />
-            <App />
-        </React.Fragment>
-    </ThemeProvider>,
+    <SitesProvider>
+        <ThemeProvider theme={Theme}>
+            <React.Fragment>
+                <GlobalStyle />
+                <App />
+            </React.Fragment>
+        </ThemeProvider>
+    </SitesProvider>,
     document.getElementById("root")
 )

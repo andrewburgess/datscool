@@ -70,7 +70,7 @@ const Site = (props) => {
                 src={get(siteState, "currentSite.url", "about:blank")}
                 title="DatsCool"
             />
-            <StyledSiteLoading className={classnames({ loading: siteState.loading })} />
+            {props.started && <StyledSiteLoading className={classnames({ loading: siteState.loading })} />}
         </React.Fragment>
     )
 }

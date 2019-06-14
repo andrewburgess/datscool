@@ -33,9 +33,8 @@ export default styled(Toolbar)`
     box-shadow: 0px 2px 16px rgba(0, 0, 0, 0.5);
     display: flex;
     flex-direction: row;
-    height: 2vh;
+    height: 48px;
     justify-content: space-between;
-    min-height: 48px;
     padding: 0 2rem;
     position: fixed;
     top: 0;
