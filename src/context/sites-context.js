@@ -75,6 +75,10 @@ export const reset = async (dispatch) => {
         type: LOAD_SITES
     })
 
+    dispatch({
+        type: RESET
+    })
+
     localStorage.setItem(VISITED_SITES_KEY, "[]")
     const archive = new window.DatArchive(window.location)
     const sitesFile = await archive.readFile("/data/sites.json")
@@ -211,7 +215,12 @@ const reducer = (state, action) => {
                 }
             }
         }
-
+        case RESET:
+            return {
+                ...state,
+                currentSite: null,
+                currentSiteKey: ""
+            }
         default:
             return state
     }

@@ -12,8 +12,12 @@ function App(props) {
     const [started, setStarted] = useState(false)
     const [sites] = useContext(SitesContext)
 
-    if (sites.currentSite && !started) {
+    if (sites.currentSite && !started && !sites.isEmpty) {
         setStarted(true)
+    }
+
+    if (sites.isEmpty && started) {
+        setStarted(false)
     }
 
     return (
