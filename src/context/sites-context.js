@@ -1,21 +1,18 @@
-import { each, keys, omit, sample } from "lodash"
+import { each, isEmpty, keys, omit, sample } from "lodash"
 import React, { createContext, useEffect, useReducer } from "react"
 
 export const ADD_SITE = "sites:add"
 export const ADD_SITE_COMPLETE = "sites:add:complete"
 export const ADD_SITE_ERROR = "sites:add:error"
 export const INSERT_SITE = "sites:insert-site"
-export const LAST_UPDATE_KEY = "last-update"
 export const LOCAL_SITES_KEY = "local-sites"
 export const LOAD_NEXT_SITE = "sites:load-next"
 export const LOAD_NEXT_SITE_COMPLETE = "sites:loaded-next"
 export const LOAD_SITES = "sites:load"
 export const LOAD_SITES_COMPLETE = "sites:loaded"
+export const RECEIVE_SITES = "sites:receive"
+export const REQUEST_SITES = "sites:request"
 export const VISITED_SITES_KEY = "visited-sites"
-
-if (!localStorage.getItem(LAST_UPDATE_KEY)) {
-    localStorage.setItem(LAST_UPDATE_KEY, "")
-}
 
 if (!localStorage.getItem(LOCAL_SITES_KEY)) {
     localStorage.setItem(LOCAL_SITES_KEY, "{}")
@@ -70,6 +67,14 @@ export const addSite = async (url, dispatch) => {
         })
         throw err
     }
+}
+
+const sendSites = async (peer) => {
+    const local = JSON.parse(localStorage.getItem(LOCAL_SITES_KEY))
+    await peer.send({
+        type: RECEIVE_SITES,
+        payload: local
+    })
 }
 
 const reducer = (state, action) => {
@@ -161,6 +166,29 @@ const reducer = (state, action) => {
                 loading: false,
                 sites: action.payload
             }
+        case RECEIVE_SITES: {
+            const local = JSON.parse(localStorage.getItem(LOCAL_SITES_KEY))
+
+            const sites = {
+                ...local,
+                ...action.payload
+            }
+
+            localStorage.setItem(LOCAL_SITES_KEY, JSON.stringify(sites))
+
+            const visitedSites = JSON.parse(localStorage.getItem(VISITED_SITES_KEY))
+            each(visitedSites, (visited) => {
+                delete sites[visited]
+            })
+
+            return {
+                ...state,
+                sites: {
+                    ...state.sites,
+                    ...sites
+                }
+            }
+        }
         default:
             return state
     }
@@ -196,6 +224,19 @@ const SitesProvider = (props) => {
                 delete sites[visited]
             })
 
+            each(rawSites, (rawSite, rawSiteKey) => {
+                delete localSites[rawSiteKey]
+            })
+
+            localStorage.setItem(LOCAL_SITES_KEY, JSON.stringify(localSites))
+
+            // Request sites from remote peers
+            if (window.experimental && window.experimental.datPeers) {
+                await window.experimental.datPeers.broadcast({
+                    type: REQUEST_SITES
+                })
+            }
+
             dispatch({
                 type: LOAD_SITES_COMPLETE,
                 payload: sites
@@ -210,18 +251,70 @@ const SitesProvider = (props) => {
             return
         }
 
+        const onPeerConnected = async (event) => {
+            await event.peer.send({
+                type: REQUEST_SITES
+            })
+        }
+
         const onMessageReceived = (event) => {
             const message = event.message
             if (!message.type) {
                 return
             }
 
-            dispatch(message)
+            if (message.type === REQUEST_SITES) {
+                sendSites(event.peer, message.payload)
+            } else {
+                dispatch(message)
+            }
         }
 
         window.experimental.datPeers.addEventListener("message", onMessageReceived)
 
-        return () => window.experimental.datPeers.removeEventListener("message", onMessageReceived)
+        return () => {
+            window.experimental.datPeers.removeEventListener("message", onMessageReceived)
+            window.experimental.datPeers.removeEventListener("connect", onPeerConnected)
+        }
+    }, [])
+
+    useEffect(() => {
+        let interval = 0
+
+        const updateArchive = async () => {
+            const archive = new window.DatArchive(window.location)
+            const info = await archive.getInfo()
+
+            if (!info.isOwner) {
+                return
+            }
+
+            interval = setInterval(async () => {
+                const local = JSON.parse(localStorage.getItem(LOCAL_SITES_KEY))
+
+                if (isEmpty(local)) {
+                    return
+                }
+
+                const sitesFile = await archive.readFile("/data/sites.json")
+                let sites = JSON.parse(sitesFile)
+
+                sites = {
+                    ...sites,
+                    ...local
+                }
+
+                await archive.writeFile("/data/sites.json", JSON.stringify(sites), "utf8")
+
+                if (archive.commit && typeof archive.commit === "function") {
+                    await archive.commit()
+                }
+            }, 1000 * 60)
+        }
+
+        updateArchive()
+
+        return () => clearInterval(interval)
     }, [])
 
     return <SitesContext.Provider value={[state, dispatch]}>{props.children}</SitesContext.Provider>
