@@ -7,12 +7,8 @@ import Theme from "./style"
 
 const GlobalStyle = createGlobalStyle`
     html {
-        font-family: sans-serif;
+        font-family: "Roboto Mono", monospace;
         font-size: 16px;
-    }
-
-    code {
-        font-family: monospace;
     }
 `
 

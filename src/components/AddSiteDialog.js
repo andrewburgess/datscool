@@ -141,6 +141,10 @@ export default styled(AddSiteDialog)`
         right: -16px;
         top: -16px;
         width: 48px;
+
+        & > svg {
+            margin: 0;
+        }
     }
 
     form {
@@ -155,6 +159,7 @@ export default styled(AddSiteDialog)`
         background-color: rgba(255, 255, 255, 0.2);
         border: none;
         border-radius: 0.25em;
+        font-family: "Roboto Mono", monospace;
         font-size: 1.5rem;
         padding: 0.75em 0.5em;
         text-align: center;

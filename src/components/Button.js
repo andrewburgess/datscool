@@ -6,8 +6,9 @@ export default styled.button`
     color: #fff;
     cursor: pointer;
     display: flex;
+    font-family: "Roboto Mono", monospace;
     font-size: 1rem;
-    font-weight: 900;
+    font-weight: 700;
     height: 36px;
     justify-content: center;
     padding: 0 2rem;
@@ -19,5 +20,11 @@ export default styled.button`
         border: 4px solid #999 !important;
         cursor: not-allowed;
         opacity: 0.5;
+    }
+
+    & > svg {
+        height: 1.25em;
+        margin-right: 0.5em;
+        width: 1.25em;
     }
 `

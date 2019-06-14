@@ -52,7 +52,7 @@ const SeedButton = (props) => {
             onClick={isSeeding ? removeSeed : addSeed}
             type="button"
         >
-            <MdShare />
+            <MdShare /> {isSeeding ? "STOP" : "SEED"}
             {isSeeding && <MdBlock className="cancel" />}
         </Button>
     )
@@ -80,7 +80,8 @@ export default styled(SeedButton)`
 
     .cancel {
         fill: #f00;
-        opacity: 0.6;
+        left: 2em;
+        opacity: 0.9;
         position: absolute;
     }
 `

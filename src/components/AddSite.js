@@ -12,7 +12,7 @@ const AddSite = (props) => {
     return (
         <>
             <Button className={props.className} onClick={() => setShowModal(true)} type="button">
-                <MdAdd />
+                <MdAdd /> ADD
             </Button>
             {showModal &&
                 createPortal(
