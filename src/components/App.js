@@ -1,6 +1,7 @@
 import React, { useContext, useState } from "react"
 import styled from "styled-components"
 
+import Empty from "./Empty"
 import PeerCount from "./PeerCount"
 import Site from "./Site"
 import { SitesContext } from "../context/sites-context"
@@ -18,8 +19,9 @@ function App(props) {
     return (
         <div className={props.className}>
             <Toolbar />
-            {!started && <Welcome />}
+            {!started && !sites.isEmpty && <Welcome />}
             <Site started={started} />
+            {sites.isEmpty && <Empty />}
             <PeerCount />
         </div>
     )

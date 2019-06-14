@@ -12,6 +12,7 @@ export const LOAD_SITES = "sites:load"
 export const LOAD_SITES_COMPLETE = "sites:loaded"
 export const RECEIVE_SITES = "sites:receive"
 export const REQUEST_SITES = "sites:request"
+export const RESET = "sites:reset"
 export const VISITED_SITES_KEY = "visited-sites"
 
 if (!localStorage.getItem(LOCAL_SITES_KEY)) {
@@ -67,6 +68,26 @@ export const addSite = async (url, dispatch) => {
         })
         throw err
     }
+}
+
+export const reset = async (dispatch) => {
+    dispatch({
+        type: LOAD_SITES
+    })
+
+    localStorage.setItem(VISITED_SITES_KEY, "[]")
+    const archive = new window.DatArchive(window.location)
+    const sitesFile = await archive.readFile("/data/sites.json")
+    const rawSites = JSON.parse(sitesFile)
+
+    const localSites = JSON.parse(localStorage.getItem(LOCAL_SITES_KEY))
+
+    const sites = { ...rawSites, ...localSites }
+
+    dispatch({
+        type: LOAD_SITES_COMPLETE,
+        payload: sites
+    })
 }
 
 const sendSites = async (peer) => {
@@ -190,6 +211,7 @@ const reducer = (state, action) => {
                 }
             }
         }
+
         default:
             return state
     }
