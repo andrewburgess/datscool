@@ -270,6 +270,7 @@ const SitesProvider = (props) => {
             }
         }
 
+        window.experimental.datPeers.addEventListener("connect", onPeerConnected)
         window.experimental.datPeers.addEventListener("message", onMessageReceived)
 
         return () => {
