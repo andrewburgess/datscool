@@ -61,11 +61,14 @@ export default styled(Toolbar)`
         height: 0;
         justify-content: center;
         left: 0;
-        transition: height 0.4s;
+        pointer-events: none;
+        transition: height 0.4s, opacity 0.1s;
         width: 100%;
 
         &.show {
             height: 24px;
+            opacity: 1;
+            pointer-events: auto;
         }
 
         a {
