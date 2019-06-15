@@ -82,7 +82,7 @@ export default styled(Site)`
     opacity: 1;
     position: fixed;
     right: 0;
-    top: 48px;
+    top: 74px;
     transition: opacity 0.2s;
     width: 100%;
     z-index: ${(props) => props.theme.layers.site};
