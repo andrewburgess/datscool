@@ -22,5 +22,9 @@
   "dat://4628fb49178a75784393e5fa45a533efb41887b35e7f298ef3ccb72cf5520bfd/": {
     "added": "2019-06-15T23:48:22.502Z",
     "url": "dat://dpe.hashbase.io/"
+  },
+  "dat://46c72b4aad128bb3df207aae774ad19403907d856d4b4999c5299c29416a75ab/": {
+    "added": "2019-06-17T15:54:28.239Z",
+    "url": "dat://federated-wiki-client.hashbase.io/"
   }
 }
