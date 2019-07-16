@@ -23,6 +23,30 @@
     "added": "2019-06-15T23:48:22.502Z",
     "url": "dat://dpe.hashbase.io/"
   },
+  "dat://41f8a987cfeba80a037e51cc8357d513b62514de36f2f9b3d3eeec7a8fb3b5a5/blog/2019/03/22/dat-for-firefox-1.html": {
+    "added": "2019-06-16T11:01:00.000Z",
+    "url": "dat://sammacbeth.eu/blog/2019/03/22/dat-for-firefox-1.html"
+  },
+  "dat://66efb822401e093e61d9d619915c94b22b224b617786b964cca351b8854d1406/entry/copyright-p2p-dweb.html": {
+    "added": "2019-06-16T11:08:00.000Z",
+    "url": "dat://ctrl.blog/entry/copyright-p2p-dweb.html"
+  },
+  "dat://0a9e202b8055721bd2bc93b3c9bbc03efdbda9cfee91f01a123fdeaadeba303e/posts/how-dat-discovers-peers": {
+    "added": "2019-06-16T11:13:00.000Z",
+    "url": "dat://rangermauve.hashbase.io/posts/how-dat-discovers-peers"
+  },
+  "dat://0a9e202b8055721bd2bc93b3c9bbc03efdbda9cfee91f01a123fdeaadeba303e/posts/killer-p2p-app": {
+    "added": "2019-06-16T11:14:00.000Z",
+    "url": "dat://rangermauve.hashbase.io/posts/killer-p2p-app"
+  },
+  "dat://44a84fb0904a6a1a5bf1d6db96518877172aef36d32c44bd672b4595e1d902e0/2018/08/04/multiwriter-dat-could-power-the-next-web/": {
+    "added": "2019-06-16T11:17:00.000Z",
+    "url": "dat://ar.al/2018/08/04/multiwriter-dat-could-power-the-next-web/"
+  },
+  "dat://c152a18c173466d37104830bd806f5db0c043f57c63a6eea3b10026479f9e77d/posts/2018-07-05-p2p-people-to-people/": {
+    "added": "2019-06-16T11:19:00.000Z",
+    "url": "dat://codepodcast.com/posts/2018-07-05-p2p-people-to-people/"
+  },
   "dat://46c72b4aad128bb3df207aae774ad19403907d856d4b4999c5299c29416a75ab/": {
     "added": "2019-06-17T15:54:28.239Z",
     "url": "dat://federated-wiki-client.hashbase.io/"
