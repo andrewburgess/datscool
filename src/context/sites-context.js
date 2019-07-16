@@ -86,7 +86,7 @@ export const reset = async (dispatch) => {
 
     const localSites = JSON.parse(localStorage.getItem(LOCAL_SITES_KEY))
 
-    const sites = { ...rawSites, ...localSites }
+    const sites = { ...localSites, ...rawSites }
 
     dispatch({
         type: LOAD_SITES_COMPLETE,
@@ -250,7 +250,7 @@ const SitesProvider = (props) => {
             const localSites = JSON.parse(localStorage.getItem(LOCAL_SITES_KEY))
             const visitedSites = JSON.parse(localStorage.getItem(VISITED_SITES_KEY))
 
-            const sites = { ...rawSites, ...localSites }
+            const sites = { ...localSites, ...rawSites }
 
             each(visitedSites, (visited) => {
                 delete sites[visited]
@@ -336,8 +336,8 @@ const SitesProvider = (props) => {
                 let sites = JSON.parse(sitesFile)
 
                 sites = {
-                    ...sites,
-                    ...local
+                    ...local,
+                    ...sites
                 }
 
                 await archive.writeFile("/data/sites.json", JSON.stringify(sites, null, 2), "utf8")
